@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Clean Flatpak, remove unused packages and update 
+echo 'Cleaning Flatpak caches and temporary files...'
+rm -rf "$HOME/.cache/flatpak"
+rm -rf "$HOME/.var/app/*/.cache"
+sudo rm -rf /var/cache/flatpak
+echo 'Remove unused Flatpak data...'
+flatpak uninstall --unused
+echo 'Running Flatpak repair...'
+sudo flatpak repair
+echo 'Update Flatpak...'
+flatpak update

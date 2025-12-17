@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+log() { printf '[trim] %s\n' "$*"; }
+
+usage() {
+  cat <<'EOF'
+Usage:
+  _trim [--dry-run] [--verbose] [--force]
+
+Description:
+  Manually TRIM/discard all mounted filesystems that support it (SSDs, NVMe, etc.).
+  Fedora runs automatic TRIM weekly via fstrim.timer by default.
+
+Options:
+  --dry-run   Show which filesystems would be trimmed without running.
+  --verbose   Show detailed per-filesystem output.
+  --force     Skip fstrim.timer check and run regardless.
+  -h, --help  Show this help.
+EOF
+}
+
+DRY_RUN=0
+VERBOSE=1
+FORCE=0
+
+for arg in "$@"; do
+  case "$arg" in
+    --dry-run) DRY_RUN=1 ;;
+    --verbose) VERBOSE=1 ;;
+    --force) FORCE=1 ;;
+    -h|--help) usage; exit 0 ;;
+    *)
+      echo "Unknown argument: $arg" >&2
+      usage
+      exit 2
+      ;;
+  esac
+done
+
+check_fstrim_timer() {
+  if [[ "$FORCE" -eq 1 ]]; then
+    return 0
+  fi
+  
+  if systemctl is-enabled fstrim.timer &>/dev/null && systemctl is-active fstrim.timer &>/dev/null; then
+    log "Note: fstrim.timer is active (automatic weekly TRIM)"
+    log "Manual TRIM may not be necessary. Use --force to skip this check."
+    read -p "Continue anyway? [y/N] " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+      log "Aborted."
+      exit 0
+    fi
+  fi
+}
+
+parse_fstrim_output() {
+  local output="$1"
+  local total_bytes=0
+  
+  # Parse lines like: "/dev/nvme0n1p3: 2.1 GiB (2253426688 bytes) trimmed"
+  while IFS= read -r line; do
+    if [[ "$line" =~ \(([0-9]+)\ bytes\)\ trimmed ]]; then
+      local bytes="${BASH_REMATCH[1]}"
+      total_bytes=$((total_bytes + bytes))
+      [[ "$VERBOSE" -eq 1 ]] && echo "$line"
+    fi
+  done <<< "$output"
+  
+  # Convert to human-readable
+  if [[ "$total_bytes" -gt 0 ]]; then
+    local gb=$(echo "scale=1; $total_bytes / 1073741824" | bc)
+    log "Total space trimmed: ${gb} GB"
+  else
+    log "No space was trimmed (filesystems may already be trimmed)"
+  fi
+}
+
+run_fstrim() {
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    log "DRY-RUN: Would trim the following filesystems:"
+    findmnt -t ext4,xfs,btrfs,f2fs,vfat -n -o TARGET | while read -r mountpoint; do
+      log "  $mountpoint"
+    done
+    return 0
+  fi
+  
+  log "Running TRIM/discard on all supported filesystems..."
+  local output
+  local exit_code
+  
+  output=$(sudo fstrim -av 2>&1) || exit_code=$?
+  
+  if [[ -z "${exit_code:-}" ]]; then
+    # Success
+    parse_fstrim_output "$output"
+  else
+    log "fstrim exited with code $exit_code"
+    if [[ "$VERBOSE" -eq 1 ]]; then
+      echo "$output"
+    fi
+    case "$exit_code" in
+      1) log "Error: Some filesystems failed to trim (check permissions or filesystem support)" ;;
+      32) log "Error: No supported filesystems found or already trimmed" ;;
+      *) log "Error: fstrim encountered an error. Run with --verbose for details." ;;
+    esac
+    return "$exit_code"
+  fi
+}
+
+echo "=== TRIM/Discard Maintenance ==="
+
+check_fstrim_timer
+run_fstrim
+
+log "Done."

@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# -------------------------------------------------------
+# Recursively pull all git repositories in a directory
+# Usage: @git-pull-all [directory] [--force]
+# If no directory specified, uses current directory
+# --force: Discard uncommitted changes before pulling
+#
+# Intent: Batch update multiple repos without manually
+# navigating into each one. Skips repos with uncommitted
+# changes unless --force is used.
+# -------------------------------------------------------
+
+FORCE=false
+TARGET_DIR="."
+
+# Parse arguments
+for arg in "$@"; do
+    case $arg in
+        --force)
+            FORCE=true
+            ;;
+        *)
+            TARGET_DIR="$arg"
+            ;;
+    esac
+done
+
+echo "=== Git Repository Update ==="
+echo "Searching in: $TARGET_DIR"
+if [ "$FORCE" = true ]; then
+    echo "⚠️  Force mode: Will discard uncommitted changes"
+fi
+echo ""
+
+TOTAL=0
+SUCCESS=0
+SKIPPED=0
+FAILED=0
+
+# Find all .git directories and process them
+while IFS= read -r gitdir; do
+    repo_dir=$(dirname "$gitdir")
+    TOTAL=$((TOTAL + 1))
+    
+    echo "→ Repository: ${repo_dir#$TARGET_DIR/}"
+    
+    cd "$repo_dir" || continue
+    
+    # Check for uncommitted changes
+    if ! git diff-index --quiet HEAD 2>/dev/null; then
+        if [ "$FORCE" = true ]; then
+            echo "  ⚠️  Discarding uncommitted changes"
+            git reset --hard HEAD >/dev/null 2>&1
+            git clean -fd >/dev/null 2>&1
+        else
+            echo "  ⚠️  Skipped (uncommitted changes)"
+            SKIPPED=$((SKIPPED + 1))
+            echo ""
+            continue
+        fi
+    fi
+    
+    # Get current branch
+    branch=$(git branch --show-current 2>/dev/null || echo "detached HEAD")
+    
+    # Pull updates
+    if git pull --quiet 2>&1 | grep -q "Already up to date"; then
+        echo "  ✓ Up to date ($branch)"
+        SUCCESS=$((SUCCESS + 1))
+    elif git pull --quiet 2>&1; then
+        echo "  ✓ Updated ($branch)"
+        SUCCESS=$((SUCCESS + 1))
+    else
+        echo "  ✗ Failed ($branch)"
+        FAILED=$((FAILED + 1))
+    fi
+    echo ""
+done < <(find "$TARGET_DIR" -type d -name ".git")
+
+echo "=== Summary ==="
+echo "Total repositories: $TOTAL"
+echo "Updated/current: $SUCCESS"
+echo "Skipped: $SKIPPED"
+echo "Failed: $FAILED"

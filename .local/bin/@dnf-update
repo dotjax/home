@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Clean DNF, remove unused packages and update 
+echo 'Cleaning DNF...'
+sudo dnf clean all
+echo 'Autoremove unusused packages...'
+sudo dnf autoremove
+echo 'Update DNF...'
+sudo dnf update
