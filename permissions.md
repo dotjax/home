@@ -51,3 +51,26 @@ Quick usage tips:
 	- For directories: execute (`x`) allows entering the directory; read (`r`) lists names.
 	- Prefer least privilege: give only needed permissions (e.g., 644 for config files, 700 for private keys).
 
+Permission digits (0–7): what each number means
+
+Each digit in a numeric mode (e.g. 755) is a sum of bits for one of: user, group, other.
+
+	- r (read)   = 4
+	- w (write)  = 2
+	- x (execute)= 1
+
+So the digit is just r+w+x added together:
+
+	- 0 = ---  (0)         no permissions
+	- 1 = --x  (1)         execute only
+	- 2 = -w-  (2)         write only
+	- 3 = -wx  (2+1)       write + execute
+	- 4 = r--  (4)         read only
+	- 5 = r-x  (4+1)       read + execute
+	- 6 = rw-  (4+2)       read + write
+	- 7 = rwx  (4+2+1)     read + write + execute
+
+Notes:
+	- For files: `x` means “can run as a program/script” (if it’s actually executable).
+	- For directories: `x` means “can enter/traverse”; `r` means “can list names”; `w` means “can create/delete/rename (subject to `x`)”.
+
