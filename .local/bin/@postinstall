@@ -32,22 +32,22 @@ echo "→ Executing targeted package removal..."
 # `|| true` makes this block non-fatal if some packages are already absent.
 
 sudo dnf remove \
-abrt* \
-pcsc-lite pcsc-lite-libs ccid \
-virtualbox* vboxguest* vboxservice* \
-vmware-tools* open-vm-tools* \
-qemu-guest-agent qemu* libvirt* \
-podman* netavark* aardvark-dns* \
-virt-manager virt-install virt-viewer \
-ModemManager \
-passim mcelog avahi thermald \
-gssproxy uresourced low-memory-monitor \
-iscsi-initiator-utils \
-gnome-tour gnome-maps malcontent-control \
-yelp gnome-contacts \
-brltty hyperv-daemons stress-ng NetworkManager-adsl \
-NetworkManager-ppp NetworkManager-vpnc \
-|| true
+  abrt* \
+  pcsc-lite pcsc-lite-libs ccid \
+  virtualbox* vboxguest* vboxservice* \
+  vmware-tools* open-vm-tools* \
+  qemu-guest-agent qemu* libvirt* \
+  podman* netavark* aardvark-dns* \
+  virt-manager virt-install virt-viewer \
+  ModemManager \
+  passim mcelog avahi thermald \
+  gssproxy uresourced low-memory-monitor \
+  iscsi-initiator-utils \
+  gnome-tour gnome-maps malcontent-control \
+  yelp gnome-contacts \
+  brltty hyperv-daemons stress-ng NetworkManager-adsl \
+  NetworkManager-ppp NetworkManager-vpnc \
+  || true
 
 # Optional: remove enterprise login / Kerberos / domain-join tooling.
 # Keep this if you ever need corporate SSO/domain join (AD/IPA/Kerberos).
@@ -68,18 +68,18 @@ sudo dnf remove \
 #--------------------------------------------------------
 echo "→ Installing useful packages, tools, and dev components..."
 sudo dnf install \
-tmux \
-wget curl aria2 \
-git gcc gcc-c++ make rustc cargo \
-cmake ninja pkg-config \
-unzip tar pigz zstd p7zip p7zip-plugins \
-rsync strace perf \
-tldr \
-lm_sensors sysstat \
-traceroute netstat net-tools nmap \
-pciutils \
-smartmontools nvme-cli \
-|| true
+  tmux \
+  wget curl aria2 \
+  git gcc gcc-c++ make rustc cargo \
+  cmake ninja pkg-config \
+  unzip tar pigz zstd p7zip p7zip-plugins \
+  rsync strace perf \
+  tldr \
+  lm_sensors sysstat \
+  traceroute netstat net-tools nmap \
+  pciutils \
+  smartmontools nvme-cli \
+  || true
 #  htop radeontop \
 #  fastfetch \
 #  stress-ng numactl \
@@ -120,8 +120,11 @@ sudo dnf -y group install --with-optional multimedia \
 # Mullvad VPN
 #-------------------------------------------------------
 echo "→ Installing Mullvad VPN..."
-sudo dnf config-manager addrepo --from-repofile=https://repository.mullvad.net/rpm/stable/mullvad.repo
-sudo dnf install mullvad-vpn
+sudo dnf config-manager addrepo \
+  --from-repofile=https://repository.mullvad.net/rpm/stable/mullvad.repo \
+  || true
+sudo dnf install mullvad-vpn \
+  || true
 
 # -------------------------------------------------------
 # AI & Compute Stack (AMD)
@@ -147,12 +150,13 @@ echo "→ Finalizing..."
 
 # Personal desktop UX conveniences (GNOME tweaks + a few common extensions)
 
-# sudo dnf install -y \
-#   gnome-extensions-app \
-#   gnome-shell-extension-dash-to-dock \
+sudo dnf install \
+  gnome-extensions-app \
+  gnome-shell-extension-dash-to-dock \
+  gnome-tweaks \
+  || true
 #   gnome-shell-extension-user-theme \
 #   gnome-shell-extension-appindicator \
-#   gnome-tweaks
 
 # Set Hostname
 # Sets the machine hostname shown in prompts/SSH/host discovery.
