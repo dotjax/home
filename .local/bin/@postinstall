@@ -94,7 +94,7 @@ sudo dnf install \
 # RPM Fusion: enables full multimedia codecs and other packages Fedora doesn't ship by default.
 # Flathub: enables Flatpak apps from the main community remote.
 
-sudo dnf install -y \
+sudo dnf install \
   https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
   https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
@@ -108,10 +108,10 @@ sudo flatpak remote-modify --enable flathub
 # echo "→ Enabling full multimedia codecs (RPM Fusion)..."
 
 # Swap codecs (don’t abort the whole script if ffmpeg-free isn’t installed)
-sudo dnf -y swap ffmpeg-free ffmpeg --allowerasing || true
+sudo dnf swap ffmpeg-free ffmpeg --allowerasing || true
 
 # Keep the multimedia group aligned over time (helps keep codecs/plugins consistent across updates)
-sudo dnf -y group install --with-optional multimedia \
+sudo dnf group install --with-optional multimedia \
   --allowerasing \
   --setopt="install_weak_deps=False" \
   --exclude=PackageKit-gstreamer-plugin
@@ -132,7 +132,7 @@ sudo dnf install mullvad-vpn \
 # echo "→ Installing ROCm (AMD Compute) for 7900 XT..."
 
 # ROCm enables AMD GPU compute for local AI workloads (e.g., PyTorch/Ollama).
-# sudo dnf install -y rocm-hip rocm-opencl rocminfo rocm-smi
+sudo dnf install rocm-hip rocm-opencl rocminfo rocm-smi
 
 # -------------------------------------------------------
 # System Optimization
