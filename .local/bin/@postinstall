@@ -46,6 +46,8 @@ sudo dnf remove -y \
   iscsi-initiator-utils \
   gnome-tour gnome-maps malcontent-control \
   yelp gnome-contacts \
+  brltty hyperv-daemons stress-ng NetworkManager-adsl \
+  NetworkManager-ppp NetworkManager-vpnc
   || true
 
 # Optional: remove enterprise login / Kerberos / domain-join tooling.
@@ -66,24 +68,24 @@ sudo dnf remove -y \
 # Useful packages and tools
 #--------------------------------------------------------
 echo "→ Installing useful packages, tools, and dev components..."
-sudo dnf install -y \
-  vim tmux \
-  htop radeontop \
-  fastfetch \
-  wget curl aria2 \
-  git gcc gcc-c++ make rustc cargo \
-  cmake ninja pkg-config \
-  stress-ng numactl \
-  ncdu btrfs-progs \
-  unzip tar pigz zstd p7zip p7zip-plugins \
-  rsync strace perf \
-  tldr jq ripgrep fd-find bat \
-  lm_sensors sysstat \
-  traceroute netstat net-tools nmap \
-  pciutils \
-  smartmontools \
-  nvme-cli \
-  || true
+# sudo dnf install -y \
+#  vim tmux \
+#  htop radeontop \
+#  fastfetch \
+#  wget curl aria2 \
+#  git gcc gcc-c++ make rustc cargo \
+#  cmake ninja pkg-config \
+#  stress-ng numactl \
+#  ncdu btrfs-progs \
+#  unzip tar pigz zstd p7zip p7zip-plugins \
+#  rsync strace perf \
+#  tldr jq ripgrep fd-find bat \
+#  lm_sensors sysstat \
+#  traceroute netstat net-tools nmap \
+#  pciutils \
+#  smartmontools \
+#  nvme-cli \
+#  || true
 
 # -------------------------------------------------------
 # Repository Expansion
