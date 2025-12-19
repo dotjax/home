@@ -16,7 +16,7 @@ sudo journalctl --vacuum-time=3d --vacuum-size=500M
 
 # Flatpak cache clean up
 rm -rf "$HOME/.cache/flatpak"
-rm -rf "$HOME/.var/app/*/.cache"
+find "$HOME/.var/app" -path '*/.cache' -prune -exec rm -rf {} + 2>/dev/null || true
 sudo rm -rf /var/cache/flatpak
 
 # Targeted cache cleanup (safe)

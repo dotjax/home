@@ -30,7 +30,7 @@ done
 echo "=== Git Repository Update ==="
 echo "Searching in: $TARGET_DIR"
 if [ "$FORCE" = true ]; then
-    echo "⚠️  Force mode: Will discard uncommitted changes"
+    echo "Force mode: will discard uncommitted changes"
 fi
 echo ""
 
@@ -44,18 +44,18 @@ while IFS= read -r gitdir; do
     repo_dir=$(dirname "$gitdir")
     TOTAL=$((TOTAL + 1))
     
-    echo "→ Repository: ${repo_dir#$TARGET_DIR/}"
+    echo "Repository: ${repo_dir#$TARGET_DIR/}"
     
     cd "$repo_dir" || continue
     
     # Check for uncommitted changes
     if ! git diff-index --quiet HEAD 2>/dev/null; then
         if [ "$FORCE" = true ]; then
-            echo "  ⚠️  Discarding uncommitted changes"
+            echo "  Discarding uncommitted changes"
             git reset --hard HEAD >/dev/null 2>&1
             git clean -fd >/dev/null 2>&1
         else
-            echo "  ⚠️  Skipped (uncommitted changes)"
+            echo "  Skipped (uncommitted changes)"
             SKIPPED=$((SKIPPED + 1))
             echo ""
             continue
@@ -64,17 +64,29 @@ while IFS= read -r gitdir; do
     
     # Get current branch
     branch=$(git branch --show-current 2>/dev/null || echo "detached HEAD")
-    
-    # Pull updates
-    if git pull --quiet 2>&1 | grep -q "Already up to date"; then
-        echo "  ✓ Up to date ($branch)"
-        SUCCESS=$((SUCCESS + 1))
-    elif git pull --quiet 2>&1; then
-        echo "  ✓ Updated ($branch)"
+
+    if [ "$branch" = "detached HEAD" ]; then
+        echo "  Skipped (detached HEAD)"
+        SKIPPED=$((SKIPPED + 1))
+        echo ""
+        continue
+    fi
+
+    # Pull updates (capture output once to avoid double pulls and pipefail exits)
+    pull_output="$(git pull --quiet 2>&1)" || {
+        echo "  Failed ($branch)"
+        FAILED=$((FAILED + 1))
+        echo "  Output: $pull_output"
+        echo ""
+        continue
+    }
+
+    if printf '%s' "$pull_output" | grep -q "Already up to date"; then
+        echo "  Up to date ($branch)"
         SUCCESS=$((SUCCESS + 1))
     else
-        echo "  ✗ Failed ($branch)"
-        FAILED=$((FAILED + 1))
+        echo "  Updated ($branch)"
+        SUCCESS=$((SUCCESS + 1))
     fi
     echo ""
 done < <(find "$TARGET_DIR" -type d -name ".git")

@@ -16,6 +16,7 @@ Options:
   --dry-run   Show which filesystems would be trimmed without running.
   --verbose   Show detailed per-filesystem output.
   --force     Skip fstrim.timer check and run regardless.
+  --yes       Auto-confirm prompts (non-interactive friendly).
   -h, --help  Show this help.
 EOF
 }
@@ -23,12 +24,14 @@ EOF
 DRY_RUN=0
 VERBOSE=1
 FORCE=0
+YES=0
 
 for arg in "$@"; do
   case "$arg" in
     --dry-run) DRY_RUN=1 ;;
     --verbose) VERBOSE=1 ;;
     --force) FORCE=1 ;;
+    --yes) YES=1 ;;
     -h|--help) usage; exit 0 ;;
     *)
       echo "Unknown argument: $arg" >&2
@@ -46,11 +49,20 @@ check_fstrim_timer() {
   if systemctl is-enabled fstrim.timer &>/dev/null && systemctl is-active fstrim.timer &>/dev/null; then
     log "Note: fstrim.timer is active (automatic weekly TRIM)"
     log "Manual TRIM may not be necessary. Use --force to skip this check."
-    read -p "Continue anyway? [y/N] " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-      log "Aborted."
-      exit 0
+    if [[ "$YES" -eq 1 ]]; then
+      log "Proceeding due to --yes."
+      return 0
+    fi
+
+    if [[ -t 0 ]]; then
+      read -p "Continue anyway? [y/N] " -n 1 -r
+      echo
+      if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        log "Aborted."
+        exit 0
+      fi
+    else
+      log "Non-interactive shell detected; continuing without prompt."
     fi
   fi
 }
