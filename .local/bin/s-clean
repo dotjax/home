@@ -30,16 +30,6 @@ rm -rf ~/.cache/pip/* 2>/dev/null || true
 # Clean temp directories in cache
 find ~/.cache -type f -name "*.tmp" -delete 2>/dev/null || true
 
-# Check for old kernels
-echo "Checking for old kernels..."
-KERNEL_COUNT=$(dnf list installed kernel 2>/dev/null | grep -c "^kernel\." || echo "0")
-if [ "$KERNEL_COUNT" -gt 3 ]; then
-    echo "Found $KERNEL_COUNT kernels installed (limit should be 3)."
-    echo "Consider running: sudo dnf remove $(dnf repoquery --installonly --latest-limit=-3 -q)"
-else
-    echo "Kernel count is within limits ($KERNEL_COUNT)."
-fi
-
 # Show final disk space
 echo ""
 echo "Disk space after cleanup:"
