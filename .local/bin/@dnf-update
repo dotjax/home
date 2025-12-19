@@ -4,6 +4,7 @@
 echo 'Cleaning DNF...'
 sudo dnf clean all
 echo 'Checking for duplication...'
+dnf check
 dnf check --duplicates
 echo 'Autoremove unusused packages...'
 sudo dnf autoremove
