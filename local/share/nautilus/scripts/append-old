@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Append .old extension to selected files and directories
+# Nautilus passes selected file paths as arguments
+
+if [ $# -eq 0 ]; then
+    exit 0
+fi
+
+for file in "$@"; do
+    # Skip if file doesn't exist (shouldn't happen, but safety check)
+    if [ ! -e "$file" ]; then
+        continue
+    fi
+    
+    # Skip if already has .old extension
+    if [[ "$file" == *.old ]]; then
+        continue
+    fi
+    
+    new_name="${file}.old"
+    
+    # Skip if target already exists
+    if [ -e "$new_name" ]; then
+        continue
+    fi
+    
+    mv "$file" "$new_name"
+done
+
