@@ -2,7 +2,7 @@
 Name=Antigravity
 Comment=Code editor.
 Exec=antigravity
-Icon=/home/jacob/.local/share/applications/antigravity.png
+Icon=./icons/antigravity.png
 Terminal=false
 Type=Application
 Categories=IDE;Development;
