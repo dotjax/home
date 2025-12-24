@@ -39,6 +39,9 @@ SUCCESS=0
 SKIPPED=0
 FAILED=0
 
+# Store absolute path to base directory
+BASE_DIR="$(cd "$TARGET_DIR" && pwd)"
+
 # Find all .git directories and process them
 while IFS= read -r gitdir; do
     repo_dir=$(dirname "$gitdir")
@@ -46,7 +49,9 @@ while IFS= read -r gitdir; do
     
     echo "Repository: ${repo_dir#$TARGET_DIR/}"
     
-    cd "$repo_dir" || continue
+    # Convert to absolute path and change to it
+    repo_abs_path="$BASE_DIR/${repo_dir#./}"
+    cd "$repo_abs_path" || continue
     
     # Check for uncommitted changes
     if ! git diff-index --quiet HEAD 2>/dev/null; then
