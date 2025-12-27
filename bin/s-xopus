@@ -1,0 +1,16 @@
+#!/bin/sh
+set -e
+
+URL="$1"
+
+yt-dlp -x --audio-format opus --audio-quality 0 -o "%(uploader)s-%(title)s.%(ext)s" "$URL"
+
+for file in *.opus; do
+    new_name=$(echo "$file" | sed 's/ /-/g')
+    mv "$file" "$new_name"
+done
+
+for file in *.opus; do
+    new_name=$(echo "$file" | sed 's/.*/\L&/')
+    mv "$file" "$new_name"
+done
