@@ -1,5 +1,4 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
 
 # Clean Flatpak, remove unused packages and update 
 echo 'Cleaning Flatpak caches and temporary files...'
