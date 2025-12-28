@@ -1,0 +1,12 @@
+[Unit]
+Description=Music Player Daemon
+Documentation=man:mpd(1) man:mpd.conf(5)
+After=network.target sound.target pipewire.service
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/mpd --no-daemon /home/jacob/.mpd/mpd.conf
+Restart=always
+
+[Install]
+WantedBy=default.target
