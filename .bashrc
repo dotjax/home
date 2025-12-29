@@ -25,6 +25,18 @@ fi
 unset rc
 
 # Alias Definitions
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+if [ -f ~/.aliases ]; then
+    . ~/.aliases
 fi
+
+# Environment Variables
+
+## HTOP
+export HTOPRC=~/configs/htop/htoprc
+
+## Electron
+export ELECTRON_OZONE_PLATFORM_HINT=wayland
+
+## Wayland
+export XDG_SESSION_TYPE=wayland
+export WLR_RENDERER=vulkan
