@@ -118,7 +118,7 @@ client.urgent           #6a3a3a #3a1f1f #ffffff #6a3a3a #6a3a3a
     bindsym $mod+Shift+c reload
 
     # Exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+    bindsym $mod+Shift+e exec 'swaymsg exit'
 #
 # Moving around:
 #
@@ -279,5 +279,4 @@ position top
 include /etc/sway/config.d/*
 
 # Gaps
-gaps inner 8
-gaps outer 6
+gaps outer 8
