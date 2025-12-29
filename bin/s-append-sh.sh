@@ -9,7 +9,7 @@ set -euo pipefail
 # -------------------------------------------------------
 
 if [ $# -eq 0 ]; then
-    echo "Usage: s-rename-append-sh <file> [file2] [file3] ..."
+    echo "Usage: s-rename-append-old <file> [file2] [file3] ..."
     echo "Appends .sh extension to the specified file(s)"
     exit 1
 fi

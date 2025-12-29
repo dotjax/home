@@ -1,3 +1,3 @@
 #!/bin/bash
 
-~/bin/discord/discord --ozone-platform-hint=wayland
+~/.applications/discord/discord.bin --ozone-platform-hint=wayland
