@@ -1,2 +1,2 @@
 #!/bin/bash
-~/.applications/telegram/telegram.bin
+~/apps/telegram/telegram.bin
