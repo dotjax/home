@@ -99,7 +99,7 @@ client.urgent           #6a3a3a #3a1f1f #ffffff #6a3a3a #6a3a3a
 # Basics:
 #
     # Start a terminal
-    bindsym $mod+Return exec $term
+    bindsym $mod+Return exec $term --config=$HOME/configs/foot/foot.ini
 
     # Kill focused window
     bindsym $mod+q kill
