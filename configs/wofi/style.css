@@ -27,10 +27,18 @@ window {
 
 #entry:selected {
   background-color: #ffffff;
-  color: #000000;
 }
 
 #entry:selected #text {
+  color: #000000;
+}
+
+#entry:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+#entry:hover #text {
   color: #000000;
 }
 
