@@ -1,0 +1,44 @@
+* {
+  font-family: monospace;
+  font-size: 24px;
+}
+
+window {
+  background-color: #000000;
+  border: 1px solid #ffffff;
+}
+
+#outer-box {
+  padding: 8px;
+}
+
+#input {
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  padding: 6px;
+  margin-bottom: 6px;
+}
+
+#entry {
+  padding: 4px 6px;
+  color: #ffffff;
+}
+
+#entry:selected {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+#entry:selected #text {
+  color: #000000;
+}
+
+#entry:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+#text {
+  margin-left: 4px;
+}
