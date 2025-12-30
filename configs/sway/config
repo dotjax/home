@@ -5,16 +5,16 @@
 # Read `man 5 sway` for a complete reference.
 
 ### Variables
-
+font pango:monospace 14
 default_border pixel 2
 default_floating_border pixel 2
 
 # Scaling
-output * scale 1.5
+# output * scale 1.5
 
 output DP-1 {
     mode 3840x2160@143.851Hz
-    scale 1.5
+    scale 1
     adaptive_sync on
 }
 
@@ -117,6 +117,10 @@ client.urgent           #6a3a3a #3a1f1f #ffffff #6a3a3a #6a3a3a
     # Reload the configuration file
     bindsym $mod+Shift+c reload
 
+    # Copy paste
+    bindsym $mod+Ctrl+c exec wl-copy
+    bindsym $mod+Ctrl+v exec wl-paste
+
     # Exit sway (logs you out of your Wayland session)
     bindsym $mod+Shift+e exec 'swaymsg exit'
 #
@@ -170,8 +174,8 @@ client.urgent           #6a3a3a #3a1f1f #ffffff #6a3a3a #6a3a3a
     bindsym $mod+Shift+0 move container to workspace number 10
     # Note: workspaces can have any name you want, not just numbers.
     # We just use 1-10 as the default.
-    bindsym $mod+Page_Down workspace next
-    bindsym $mod+Page_Up workspace prev
+    bindsym $mod+Insert workspace prev
+    bindsym $mod+Page_Up workspace next
 #
 # Layout stuff:
 #
@@ -233,6 +237,10 @@ mode "resize" {
     bindsym Escape mode "default"
 }
 bindsym $mod+r mode "resize"
+
+# Automatically center all floating windows
+# for_window [floating] resize set 70 ppt 70 ppt, move position center
+
 #
 # Utilities:
 #
@@ -266,7 +274,10 @@ bindsym $mod+r mode "resize"
 # }
 
 bar {
-position top
+    position top
+    status_command ~/.config/sway/status.sh
+    status_edge_padding 8
+    tray_padding 8
     colors {
         focused_workspace   #000000 #ffffff #000000
         active_workspace    #000000 #000000 #ffffff
@@ -275,8 +286,34 @@ position top
     }
 }
 
+#bar {
+#    position top
+#
+#    status_command sh -c 'while true; do date "+%a %Y-%m-%d %H:%M"; sleep 60; done'
+#
+#    colors {
+#        focused_workspace   #000000 #ffffff #000000
+#        active_workspace    #000000 #000000 #ffffff
+#        inactive_workspace  #000000 #000000 #ffffff
+#        urgent_workspace    #ffffff #000000 #ffffff
+#    }
+#}
+
+# bar {
+# position top
+
+#    status_command while true; do date '+%a %Y-%m-%d %H:%M'; sleep 60; done
+#    colors {
+#        focused_workspace   #000000 #ffffff #000000
+#        active_workspace    #000000 #000000 #ffffff
+#        inactive_workspace  #000000 #000000 #ffffff
+#        urgent_workspace    #ffffff #000000 #ffffff
+#    }
+#}
+
 
 include /etc/sway/config.d/*
 
 # Gaps
-gaps outer 8
+gaps inner 20
+gaps outer 20
