@@ -256,7 +256,7 @@ bindsym $mod+r mode "resize"
     bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
     bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
     # Special key to take a screenshot with grim
-    bindsym Print exec grim
+    bindsym Print exec grim -g $(slurp)
 
 #
 # Status Bar:
@@ -282,12 +282,12 @@ bar {
    status_edge_padding 8
    tray_padding 8
    colors {
-       background #ffffff
-       statusline #000000
-
-       focused_workspace   #ffffff #000000 #ffffff
-       active_workspace    #000000 #ffffff #000000
-       inactive_workspace  #ffffff #ffffff #000000
+       background #000000
+       statusline #ffffff
+       
+       focused_workspace   #000000 #ffffff #000000
+       active_workspace    #000000 #000000 #ffffff
+       inactive_workspace  #000000 #000000 #ffffff
        urgent_workspace    #ffffff #000000 #ffffff
    }
 }
