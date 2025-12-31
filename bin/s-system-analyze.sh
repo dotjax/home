@@ -120,7 +120,12 @@ fi
 
 # Check for broken symlinks in systemd search paths
 echo "Checking for broken systemd unit symlinks..."
-find /etc/systemd/system /usr/lib/systemd/system -xtype l -ls 2>/dev/null || echo "  None found."
+BROKEN_SYS_LINKS=$(find /etc/systemd/system /usr/lib/systemd/system -xtype l 2>/dev/null)
+if [ -n "$BROKEN_SYS_LINKS" ]; then
+    echo "$BROKEN_SYS_LINKS" | xargs ls -l
+else
+    echo "  None found."
+fi
 
 echo ""
 echo "--- User Level ---"
@@ -133,7 +138,13 @@ else
 fi
 
 # Check for broken symlinks in user systemd search paths
-find ~/.config/systemd/user -xtype l -ls 2>/dev/null || echo "  No broken user unit symlinks."
+echo "Checking for broken user unit symlinks..."
+BROKEN_USER_LINKS=$(find ~/.config/systemd/user -xtype l 2>/dev/null)
+if [ -n "$BROKEN_USER_LINKS" ]; then
+    echo "$BROKEN_USER_LINKS" | xargs ls -l
+else
+    echo "  No broken user unit symlinks."
+fi
 echo ""
 
 # 9. Broken Symlinks

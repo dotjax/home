@@ -57,6 +57,13 @@ find ~/.cache -type f -name "*.tmp" -delete 2>/dev/null || true
 echo "Cleaning __pycache__ directories..."
 find ~ -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
 
+# Systemd cleanup
+echo "Cleaning systemd (resetting failed units and removing broken symlinks)..."
+sudo systemctl reset-failed
+systemctl --user reset-failed
+sudo find /etc/systemd/system /usr/lib/systemd/system -xtype l -delete 2>/dev/null || true
+find ~/.config/systemd/user -xtype l -delete 2>/dev/null || true
+
 # Clean broken symlinks
 echo "Cleaning broken symlinks in home directory..."
 find ~ -maxdepth 3 -xtype l -delete 2>/dev/null || true
