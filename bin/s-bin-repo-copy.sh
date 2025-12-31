@@ -17,11 +17,10 @@ if [ ! -d "$USER_BIN_DIR" ]; then
     mkdir -p "$USER_BIN_DIR"
 fi
 
-# Use rsync to copy files
-# -a: archive mode (preserves permissions, timestamps, etc.)
+# Use cp to copy files (more portable than rsync)
+# -a: archive mode (recursive, preserves permissions/timestamps)
+# -u: update (only copy if source is newer)
 # -v: verbose
-# -u: update (skip files that are newer on the receiver) - actually -a handles timestamps well.
-# We do NOT use --delete to avoid deleting other scripts the user might have in ~/bin
-rsync -av "$REPO_BIN_DIR/" "$USER_BIN_DIR/"
+cp -auv "$REPO_BIN_DIR"/* "$USER_BIN_DIR/"
 
 echo "Sync complete."
