@@ -14,6 +14,14 @@ echo ""
 echo "Cleaning journal logs (retaining 3 days, max 500MB)..."
 sudo journalctl --vacuum-time=3d --vacuum-size=500M
 
+# Empty Trash
+echo "Emptying Trash..."
+rm -rf "$HOME/.local/share/Trash/"*
+
+# Flatpak cleanup
+echo "Cleaning Flatpak (unused runtimes)..."
+flatpak uninstall --unused -y
+
 # Flatpak cache clean up
 rm -rf "$HOME/.cache/flatpak"
 find "$HOME/.var/app" -path '*/.cache' -prune -exec rm -rf {} + 2>/dev/null || true
@@ -29,6 +37,10 @@ find ~/.cache/thumbnails -type f -mtime +30 -delete 2>/dev/null || true
 rm -rf ~/.cache/pip/* 2>/dev/null || true
 # Clean temp directories in cache
 find ~/.cache -type f -name "*.tmp" -delete 2>/dev/null || true
+
+# DNF Cleanup
+echo "Cleaning DNF cache..."
+sudo dnf clean all
 
 # Show final disk space
 echo ""
