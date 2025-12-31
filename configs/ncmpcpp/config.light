@@ -1,0 +1,14 @@
+
+# ncmpcpp light-theme config
+# Goal: force high-contrast (dark) foreground colors for light terminal themes.
+
+# --- Visualizer / UI (from your current config)
+visualizer_data_source = "/tmp/mpd.fifo"
+visualizer_output_name = "visualize"
+visualizer_in_stereo = "yes"
+visualizer_type = "spectrum"
+visualizer_look = "▮▮"
+user_interface = "alternative"
+
+# --- Colors
+colors_enabled = "no"
